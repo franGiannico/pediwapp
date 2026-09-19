@@ -188,22 +188,18 @@ select {
   padding: 0 4px;
 }
 
-/* Category tabs */
-.category-tabs {
+/* Category bar (Todos + dropdown de categorías) */
+.category-bar {
   display: flex;
+  align-items: center;
   gap: 8px;
-  overflow-x: auto;
   padding: 14px 16px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  scrollbar-width: none;
+  position: relative;
 }
 
-.category-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.category-tabs button {
+.category-bar > button {
   flex: none;
   padding: 8px 16px;
   border-radius: 999px;
@@ -213,9 +209,98 @@ select {
   white-space: nowrap;
 }
 
-.category-tabs button.active {
+.category-bar > button.active {
   background: var(--header-bg);
   color: #fff;
+}
+
+.category-dropdown-wrapper {
+  position: relative;
+}
+
+.category-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  max-width: 55vw;
+}
+
+.category-dropdown-toggle span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-dropdown-toggle.active {
+  background: var(--header-bg);
+  color: #fff;
+}
+
+.category-dropdown-toggle .chevron {
+  font-size: 0.6rem;
+  flex: none;
+}
+
+.category-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(320px, 85vw);
+  max-height: 70vh;
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  overflow: hidden;
+}
+
+.category-dropdown-panel input {
+  margin: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.category-dropdown-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 6px 10px;
+  overflow-y: auto;
+}
+
+.category-dropdown-panel li button {
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.category-dropdown-panel li button:hover {
+  background: var(--bg);
+}
+
+.category-dropdown-panel li button.active {
+  background: var(--bg);
+  font-weight: 600;
+  color: var(--header-bg);
+}
+
+.category-dropdown-panel .no-results {
+  padding: 0 10px 10px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 /* Product grid */
