@@ -553,6 +553,12 @@ select {
   transition: background 0.2s ease, transform 0.15s ease;
 }
 
+/* En la pantalla de detalle hay una barra fija abajo con el boton Agregar;
+   subimos el boton flotante del carrito para que no quede tapado por ella. */
+.detail-page .cart-fab {
+  bottom: 92px;
+}
+
 /* Checkout */
 .checkout-screen {
   max-width: 640px;
