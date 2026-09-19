@@ -87,12 +87,20 @@ select {
   margin-bottom: 24px;
 }
 
-.login-card select {
+.login-card select,
+.login-card input {
   width: 100%;
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+
+.login-card .test-mode-note {
+  margin-top: 16px;
+  margin-bottom: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 .login-card button {
