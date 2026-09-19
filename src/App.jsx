@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useEmployee } from './context/EmployeeContext.jsx';
 import Login from './pages/Login.jsx';
 import Catalog from './pages/Catalog.jsx';
+import ProductDetail from './pages/ProductDetail.jsx';
 import Checkout from './pages/Checkout.jsx';
 
 function RequireEmployee({ children }) {
@@ -19,6 +20,14 @@ export default function App() {
         element={
           <RequireEmployee>
             <Catalog />
+          </RequireEmployee>
+        }
+      />
+      <Route
+        path="/producto/:id"
+        element={
+          <RequireEmployee>
+            <ProductDetail />
           </RequireEmployee>
         }
       />

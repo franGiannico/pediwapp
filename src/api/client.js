@@ -20,6 +20,7 @@ export const api = {
     return request(`/products${qs ? `?${qs}` : ''}`);
   },
   getCategories: () => request('/products/categories'),
+  getProduct: (id) => request(`/products/${id}`),
   getEmployees: () => request('/employees'),
   createOrder: (payload) => request('/orders', { method: 'POST', body: JSON.stringify(payload) }),
 };
