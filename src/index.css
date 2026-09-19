@@ -667,6 +667,74 @@ select {
   margin-bottom: 12px;
 }
 
+.shipping-section {
+  margin-bottom: 16px;
+}
+
+.shipping-section h2 {
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.shipping-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shipping-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.shipping-option input {
+  accent-color: var(--header-bg);
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.shipping-option.selected {
+  border-color: var(--header-bg);
+  background: rgba(33, 36, 61, 0.05);
+}
+
+.shipping-option-label {
+  flex: 1;
+}
+
+.shipping-line-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin: -2px 0 2px 26px;
+  max-width: calc(100% - 26px);
+}
+
+.shipping-address-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: -2px 0 2px 26px;
+}
+
+.shipping-address-fields input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
 .financing-section {
   margin-bottom: 16px;
 }

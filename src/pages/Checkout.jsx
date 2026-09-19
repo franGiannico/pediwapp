@@ -11,6 +11,11 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
 const INTEREST_RATE_PER_MONTH = 0.025;
 const INSTALLMENT_OPTIONS = [1, 3, 6, 9, 12, 18];
 
+// Puntas de línea disponibles para retirar el pedido sin cargo.
+const SHIPPING_LINES = ['Savio', 'Villa Allende', 'Patricios', 'Valparaiso', 'Don Bosco'];
+// Envío a domicilio, solo dentro de Córdoba Capital.
+const HOME_DELIVERY_COST = 35000;
+
 function computeInstallment(total, n) {
   if (n <= 1) {
     return { installments: 1, interestRate: 0, financingTotal: total, installmentAmount: total };
@@ -25,19 +30,38 @@ export default function Checkout() {
   const { employee } = useEmployee();
   const [notes, setNotes] = useState('');
   const [installments, setInstallments] = useState(1);
+  const [shippingMethod, setShippingMethod] = useState('sucursal');
+  const [shippingLine, setShippingLine] = useState(SHIPPING_LINES[0]);
+  const [address, setAddress] = useState('');
+  const [schedule, setSchedule] = useState('');
+  const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const plans = useMemo(() => INSTALLMENT_OPTIONS.map((n) => computeInstallment(total, n)), [total]);
+  const shippingCost = shippingMethod === 'domicilio' ? HOME_DELIVERY_COST : 0;
+  const orderSubtotal = total + shippingCost;
+
+  const plans = useMemo(() => INSTALLMENT_OPTIONS.map((n) => computeInstallment(orderSubtotal, n)), [orderSubtotal]);
   const selectedPlan = plans.find((p) => p.installments === installments) || plans[0];
 
   async function handleSendOrder() {
     if (!items.length || !WHATSAPP_NUMBER) return;
+
+    if (shippingMethod === 'domicilio' && (!address.trim() || !phone.trim())) {
+      setError('Completá el domicilio y el teléfono para el envío a domicilio.');
+      return;
+    }
+
     setSending(true);
     setError('');
     try {
-      const { whatsappMessage } = await api.createOrder({ employee, items, notes, installments });
+      const shipping =
+        shippingMethod === 'domicilio'
+          ? { method: 'domicilio', address: address.trim(), schedule: schedule.trim(), phone: phone.trim() }
+          : { method: 'sucursal', line: shippingLine };
+
+      const { whatsappMessage } = await api.createOrder({ employee, items, notes, installments, shipping });
       const encoded = encodeURIComponent(whatsappMessage);
       const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -98,6 +122,70 @@ export default function Checkout() {
             onChange={(e) => setNotes(e.target.value)}
           />
 
+          <div className="shipping-section">
+            <h2>Envío</h2>
+            <div className="shipping-options">
+              <label className={`shipping-option ${shippingMethod === 'sucursal' ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="shipping"
+                  checked={shippingMethod === 'sucursal'}
+                  onChange={() => setShippingMethod('sucursal')}
+                />
+                <span className="shipping-option-label">Retiro en punta de línea — Gratis</span>
+              </label>
+
+              {shippingMethod === 'sucursal' && (
+                <select
+                  className="shipping-line-select"
+                  value={shippingLine}
+                  onChange={(e) => setShippingLine(e.target.value)}
+                >
+                  {SHIPPING_LINES.map((line) => (
+                    <option key={line} value={line}>
+                      {line}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              <label className={`shipping-option ${shippingMethod === 'domicilio' ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="shipping"
+                  checked={shippingMethod === 'domicilio'}
+                  onChange={() => setShippingMethod('domicilio')}
+                />
+                <span className="shipping-option-label">
+                  Envío a domicilio (Córdoba Capital) — ${formatMoney(HOME_DELIVERY_COST)}
+                </span>
+              </label>
+
+              {shippingMethod === 'domicilio' && (
+                <div className="shipping-address-fields">
+                  <input
+                    type="text"
+                    placeholder="Domicilio"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Horario preferido"
+                    value={schedule}
+                    onChange={(e) => setSchedule(e.target.value)}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Teléfono de contacto"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="financing-section">
             <h2>Forma de pago</h2>
             <div className="financing-options">
@@ -130,7 +218,7 @@ export default function Checkout() {
           {error && <p className="error">{error}</p>}
           {!WHATSAPP_NUMBER && <p className="error">Falta configurar VITE_WHATSAPP_NUMBER en el frontend.</p>}
           <button type="button" className="whatsapp-btn" onClick={handleSendOrder} disabled={sending}>
-            {sending ? 'Enviando...' : 'Enviar pedido por WhatsApp'}
+            {sending ? 'Enviando...' : 'Enviar pedido'}
           </button>
         </>
       )}
