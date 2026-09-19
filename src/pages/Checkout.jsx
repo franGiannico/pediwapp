@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { useEmployee } from '../context/EmployeeContext.jsx';
@@ -6,20 +6,36 @@ import { api } from '../api/client.js';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
 
+// Recargo simple: 2.5% por cada mes de financiación (3 cuotas = 7.5%, 18 cuotas = 45%, etc).
+const INTEREST_RATE_PER_MONTH = 0.025;
+const INSTALLMENT_OPTIONS = [1, 3, 6, 9, 12, 18];
+
+function computeInstallment(total, n) {
+  if (n <= 1) {
+    return { installments: 1, interestRate: 0, financingTotal: total, installmentAmount: total };
+  }
+  const interestRate = INTEREST_RATE_PER_MONTH * n;
+  const financingTotal = total * (1 + interestRate);
+  return { installments: n, interestRate, financingTotal, installmentAmount: financingTotal / n };
+}
+
 export default function Checkout() {
   const { items, total, updateQty, removeItem, clearCart } = useCart();
   const { employee } = useEmployee();
   const [notes, setNotes] = useState('');
+  const [installments, setInstallments] = useState(1);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const plans = useMemo(() => INSTALLMENT_OPTIONS.map((n) => computeInstallment(total, n)), [total]);
 
   async function handleSendOrder() {
     if (!items.length || !WHATSAPP_NUMBER) return;
     setSending(true);
     setError('');
     try {
-      const { whatsappMessage } = await api.createOrder({ employee, items, notes });
+      const { whatsappMessage } = await api.createOrder({ employee, items, notes, installments });
       const encoded = encodeURIComponent(whatsappMessage);
       const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -79,11 +95,35 @@ export default function Checkout() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
+
+          <div className="financing-section">
+            <h2>Forma de pago</h2>
+            <div className="financing-options">
+              {plans.map((plan) => (
+                <label
+                  key={plan.installments}
+                  className={`financing-option ${installments === plan.installments ? 'selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="installments"
+                    value={plan.installments}
+                    checked={installments === plan.installments}
+                    onChange={() => setInstallments(plan.installments)}
+                  />
+                  <span className="financing-option-label">
+                    {plan.installments === 1
+                      ? 'Contado'
+                      : `${plan.installments} cuotas de $${plan.installmentAmount.toFixed(2)}`}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div className="cart-total">Total: ${total.toFixed(2)}</div>
           {error && <p className="error">{error}</p>}
-          {!WHATSAPP_NUMBER && (
-            <p className="error">Falta configurar VITE_WHATSAPP_NUMBER en el frontend.</p>
-          )}
+          {!WHATSAPP_NUMBER && <p className="error">Falta configurar VITE_WHATSAPP_NUMBER en el frontend.</p>}
           <button type="button" className="whatsapp-btn" onClick={handleSendOrder} disabled={sending}>
             {sending ? 'Enviando...' : 'Enviar pedido por WhatsApp'}
           </button>
