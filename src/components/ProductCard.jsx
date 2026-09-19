@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import { formatMoney } from '../utils/format.js';
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
@@ -46,8 +47,8 @@ export default function ProductCard({ product }) {
           {product.name}
         </h3>
         <div className="product-price">
-          {product.promotionalPrice ? <span className="price-old">${product.price.toFixed(2)}</span> : null}
-          <span className="price">${price.toFixed(2)}</span>
+          {product.promotionalPrice ? <span className="price-old">${formatMoney(product.price)}</span> : null}
+          <span className="price">${formatMoney(price)}</span>
         </div>
         <button type="button" className={`add-btn ${added ? 'added' : ''}`} onClick={handleAdd}>
           {added ? '✓ Agregado' : 'Agregar'}

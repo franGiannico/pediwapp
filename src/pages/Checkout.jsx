@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { useEmployee } from '../context/EmployeeContext.jsx';
 import { api } from '../api/client.js';
+import { formatMoney } from '../utils/format.js';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
 
@@ -29,6 +30,7 @@ export default function Checkout() {
   const navigate = useNavigate();
 
   const plans = useMemo(() => INSTALLMENT_OPTIONS.map((n) => computeInstallment(total, n)), [total]);
+  const selectedPlan = plans.find((p) => p.installments === installments) || plans[0];
 
   async function handleSendOrder() {
     if (!items.length || !WHATSAPP_NUMBER) return;
@@ -65,7 +67,7 @@ export default function Checkout() {
             {item.imageUrl ? <img src={item.imageUrl} alt={item.name} /> : <div className="cart-item-noimg" />}
             <div className="cart-item-info">
               <span className="cart-item-name">{item.name}</span>
-              <span className="cart-item-price">${item.price.toFixed(2)}</span>
+              <span className="cart-item-price">${formatMoney(item.price)}</span>
             </div>
             <div className="qty-stepper">
               <button type="button" onClick={() => updateQty(item.productId, item.qty - 1)}>
@@ -114,14 +116,17 @@ export default function Checkout() {
                   <span className="financing-option-label">
                     {plan.installments === 1
                       ? 'Contado'
-                      : `${plan.installments} cuotas de $${plan.installmentAmount.toFixed(2)}`}
+                      : `${plan.installments} cuotas de $${formatMoney(plan.installmentAmount)}`}
                   </span>
                 </label>
               ))}
             </div>
           </div>
 
-          <div className="cart-total">Total: ${total.toFixed(2)}</div>
+          <div className="cart-total">
+            {installments > 1 ? `Total en ${installments} cuotas: ` : 'Total: '}$
+            {formatMoney(selectedPlan.financingTotal)}
+          </div>
           {error && <p className="error">{error}</p>}
           {!WHATSAPP_NUMBER && <p className="error">Falta configurar VITE_WHATSAPP_NUMBER en el frontend.</p>}
           <button type="button" className="whatsapp-btn" onClick={handleSendOrder} disabled={sending}>

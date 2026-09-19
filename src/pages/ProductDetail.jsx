@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { api } from '../api/client.js';
+import { formatMoney } from '../utils/format.js';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -106,8 +107,8 @@ export default function ProductDetail() {
           <h1>{product.name}</h1>
           {product.sku && <p className="detail-sku">SKU: {product.sku}</p>}
           <div className="product-price detail-price">
-            {product.promotionalPrice ? <span className="price-old">${product.price.toFixed(2)}</span> : null}
-            <span className="price">${price.toFixed(2)}</span>
+            {product.promotionalPrice ? <span className="price-old">${formatMoney(product.price)}</span> : null}
+            <span className="price">${formatMoney(price)}</span>
           </div>
 
           {product.description && (
