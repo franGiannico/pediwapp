@@ -1,15 +1,18 @@
 :root {
+  /* Paleta institucional Coniferal Tienda (Manual de Identidad Visual, p.12) */
   --bg: #f4f5f7;
   --surface: #ffffff;
-  --header-bg: #21243d;
+  --header-bg: #003049;
   --header-text: #ffffff;
-  --accent: #ff5a5f;
+  --accent: #f77f00;
+  --accent-rgb: 247, 127, 0;
   --whatsapp: #25d366;
   --whatsapp-dark: #1eab54;
   --text: #1b1c1e;
   --text-muted: #6b7280;
   --border: #e5e7eb;
   --radius: 14px;
+  --font-headline: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -24,9 +27,23 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
+}
+
+/* Titulares con la tipografía corporativa (Montserrat ExtraBold Italic),
+   según el manual de marca de Coniferal Tienda. */
+h1,
+h2,
+.login-card h1,
+.detail-info h1,
+.checkout-header h1,
+.shipping-section h2,
+.financing-section h2 {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-style: italic;
 }
 
 button {
@@ -75,6 +92,13 @@ select {
   max-width: 380px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.login-logo {
+  display: block;
+  height: 48px;
+  width: auto;
+  margin: 0 auto 16px;
 }
 
 .login-card h1 {
@@ -140,6 +164,24 @@ select {
   letter-spacing: 0.02em;
 }
 
+/* Logo oficial de Coniferal Tienda: el manual de marca pide que se vea
+   siempre sobre fondo blanco, así que lo envolvemos en una placa blanca
+   redondeada en vez de ponerlo directo sobre el header oscuro. */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.brand-logo img {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
 .employee-badge {
   background: rgba(255, 255, 255, 0.12);
   color: var(--header-text);
@@ -168,7 +210,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(255, 90, 95, 0.45);
+  box-shadow: 0 10px 25px rgba(var(--accent-rgb), 0.45);
   z-index: 20;
 }
 

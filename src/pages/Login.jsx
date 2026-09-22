@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEmployee } from '../context/EmployeeContext.jsx';
+import coniferalLogo from '../assets/coniferal-tienda-logo.png';
 
 export default function Login() {
   const [legajo, setLegajo] = useState('');
@@ -25,6 +26,7 @@ export default function Login() {
   return (
     <div className="login-screen">
       <div className="login-card">
+        <img className="login-logo" src={coniferalLogo} alt="Coniferal Tienda" />
         <h1>Pediwapp Coni</h1>
         <p>Ingresá tu número de legajo y tu DNI para empezar a armar tu pedido.</p>
 

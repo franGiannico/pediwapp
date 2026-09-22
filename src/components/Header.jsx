@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEmployee } from '../context/EmployeeContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
+import coniferalLogo from '../assets/coniferal-tienda-logo.png';
 
 export default function Header({ search, onSearchChange }) {
   const { employee, logout } = useEmployee();
@@ -26,7 +27,9 @@ export default function Header({ search, onSearchChange }) {
   return (
     <header className="app-header">
       <div className="app-header-top">
-        <div className="brand">Coniferal</div>
+        <div className="brand-logo">
+          <img src={coniferalLogo} alt="Coniferal Tienda" />
+        </div>
         <button type="button" className="employee-badge" onClick={logout} title="Cambiar de empleado">
           {employee?.name}
         </button>
