@@ -127,23 +127,30 @@ select {
 
 .dni-field input {
   margin-bottom: 0;
-  padding-right: 68px;
+  padding-right: 44px;
 }
 
-.dni-toggle {
+/* Más específico que ".login-card button" a propósito: si no, el estilo
+   general de botón (ancho completo, fondo oscuro) le gana a este. */
+.login-card .dni-toggle {
   position: absolute;
   top: 50%;
-  right: 6px;
+  right: 4px;
   transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   color: var(--text-muted);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 8px;
+  font-size: 1rem;
+  line-height: 1;
   border-radius: 8px;
 }
 
-.dni-toggle:hover {
+.login-card .dni-toggle:hover {
   background: var(--bg);
 }
 

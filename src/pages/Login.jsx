@@ -64,8 +64,10 @@ export default function Login() {
               className="dni-toggle"
               onClick={() => setShowDni((v) => !v)}
               tabIndex={-1}
+              aria-label={showDni ? 'Ocultar DNI' : 'Mostrar DNI'}
+              aria-pressed={showDni}
             >
-              {showDni ? 'Ocultar' : 'Mostrar'}
+              👁️
             </button>
           </div>
           <button type="submit" disabled={!legajo.trim() || !dni.trim() || loading}>
