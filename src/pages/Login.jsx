@@ -7,6 +7,7 @@ import coniferalLogo from '../assets/coniferal-tienda-logo.png';
 export default function Login() {
   const [legajo, setLegajo] = useState('');
   const [dni, setDni] = useState('');
+  const [showDni, setShowDni] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { setEmployee } = useEmployee();
@@ -48,15 +49,25 @@ export default function Login() {
             onChange={(e) => setLegajo(e.target.value)}
             required
           />
-          <input
-            type="text"
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="DNI (sin puntos)"
-            value={dni}
-            onChange={(e) => setDni(e.target.value)}
-            required
-          />
+          <div className="dni-field">
+            <input
+              type={showDni ? 'text' : 'password'}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="DNI (sin puntos)"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              className="dni-toggle"
+              onClick={() => setShowDni((v) => !v)}
+              tabIndex={-1}
+            >
+              {showDni ? 'Ocultar' : 'Mostrar'}
+            </button>
+          </div>
           <button type="submit" disabled={!legajo.trim() || !dni.trim() || loading}>
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
