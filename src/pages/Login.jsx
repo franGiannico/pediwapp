@@ -1,26 +1,34 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEmployee } from '../context/EmployeeContext.jsx';
+import { api } from '../api/client.js';
 import coniferalLogo from '../assets/coniferal-tienda-logo.png';
 
 export default function Login() {
   const [legajo, setLegajo] = useState('');
   const [dni, setDni] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { setEmployee } = useEmployee();
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const legajoTrim = legajo.trim();
     const dniTrim = dni.trim();
     if (!legajoTrim || !dniTrim) return;
 
-    // Modo prueba: por ahora no se valida contra la base de empleados, cualquier
-    // legajo/DNI deja entrar. Cuando se cargue la nómina real, este submit va a
-    // llamar a un endpoint (ej. POST /api/employees/login) que valide legajo+dni
-    // contra la tabla de empleados y devuelva el nombre real.
-    setEmployee({ id: null, name: `Legajo ${legajoTrim}`, legajo: legajoTrim, dni: dniTrim });
-    navigate('/catalogo');
+    setError('');
+    setLoading(true);
+    try {
+      const { employee } = await api.employeeLogin({ legajo: legajoTrim, dni: dniTrim });
+      setEmployee(employee);
+      navigate('/catalogo');
+    } catch (err) {
+      setError(err.message || 'No se pudo iniciar sesión');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,12 +57,12 @@ export default function Login() {
             onChange={(e) => setDni(e.target.value)}
             required
           />
-          <button type="submit" disabled={!legajo.trim() || !dni.trim()}>
-            Entrar
+          <button type="submit" disabled={!legajo.trim() || !dni.trim() || loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="test-mode-note">Modo prueba: por ahora cualquier legajo y DNI te deja entrar.</p>
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

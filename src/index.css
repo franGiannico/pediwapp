@@ -120,11 +120,9 @@ select {
   margin-bottom: 12px;
 }
 
-.login-card .test-mode-note {
-  margin-top: 16px;
-  margin-bottom: 0;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.login-card .error {
+  margin: 16px 0 0;
+  text-align: left;
 }
 
 .login-card button {

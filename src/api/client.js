@@ -21,6 +21,6 @@ export const api = {
   },
   getCategories: () => request('/products/categories'),
   getProduct: (id) => request(`/products/${id}`),
-  getEmployees: () => request('/employees'),
+  employeeLogin: (payload) => request('/employees/login', { method: 'POST', body: JSON.stringify(payload) }),
   createOrder: (payload) => request('/orders', { method: 'POST', body: JSON.stringify(payload) }),
 };
