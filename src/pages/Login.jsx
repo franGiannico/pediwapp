@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
     const legajoTrim = legajo.trim();
     const dniTrim = dni.trim();
-    if (!legajoTrim || !dniTrim) return;
+    if (!dniTrim) return; // el legajo es opcional: sin legajo se ingresa como socio/a
 
     setError('');
     setLoading(true);
@@ -37,17 +37,19 @@ export default function Login() {
       <div className="login-card">
         <img className="login-logo" src={coniferalLogo} alt="Coniferal Tienda" />
         <h1>Pediwapp Coni</h1>
-        <p>Ingresá tu número de legajo y tu DNI para empezar a armar tu pedido.</p>
+        <p>
+          Ingresá tu número de legajo y tu DNI para empezar a armar tu pedido. Si sos socio/a, ingresá solo tu
+          DNI.
+        </p>
 
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             inputMode="numeric"
             autoComplete="off"
-            placeholder="Número de legajo"
+            placeholder="Legajo (solo empleados)"
             value={legajo}
             onChange={(e) => setLegajo(e.target.value)}
-            required
           />
           <div className="dni-field">
             <input
@@ -70,7 +72,7 @@ export default function Login() {
               👁️
             </button>
           </div>
-          <button type="submit" disabled={!legajo.trim() || !dni.trim() || loading}>
+          <button type="submit" disabled={!dni.trim() || loading}>
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>

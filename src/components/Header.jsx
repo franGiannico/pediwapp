@@ -32,6 +32,7 @@ export default function Header({ search, onSearchChange }) {
         </div>
         <button type="button" className="employee-badge" onClick={logout} title="Cambiar de empleado">
           {employee?.name}
+          {employee?.role === 'socio' && ' (Socio/a)'}
         </button>
       </div>
       {onSearchChange && (
