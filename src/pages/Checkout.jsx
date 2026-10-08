@@ -12,8 +12,8 @@ const INTEREST_RATE_PER_MONTH = 0.025;
 const INSTALLMENT_OPTIONS = [1, 3, 6, 9, 12, 18];
 
 // Puntas de línea disponibles para retirar el pedido sin cargo.
-// (por ahora solo Savio y Don Bosco: en las demás todavía no hay dónde dejar los productos)
-const SHIPPING_LINES = ['Savio', 'Don Bosco'];
+// (por ahora solo Don Bosco: en las demás todavía no hay dónde dejar los productos)
+const SHIPPING_LINES = ['Don Bosco'];
 // Envío a domicilio, solo dentro de Córdoba Capital.
 const HOME_DELIVERY_COST = 35000;
 
