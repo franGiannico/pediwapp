@@ -4,6 +4,7 @@ import Login from './pages/Login.jsx';
 import Catalog from './pages/Catalog.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import Checkout from './pages/Checkout.jsx';
+import Admin from './pages/admin/Admin.jsx';
 
 function RequireEmployee({ children }) {
   const { employee } = useEmployee();
@@ -39,6 +40,7 @@ export default function App() {
           </RequireEmployee>
         }
       />
+      <Route path="/admin" element={<Admin />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
