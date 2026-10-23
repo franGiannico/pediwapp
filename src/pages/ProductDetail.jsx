@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { api } from '../api/client.js';
@@ -8,7 +8,16 @@ import { formatMoney } from '../utils/format.js';
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { addItem } = useCart();
+
+  // Si llegamos desde el catálogo, "Volver" retrocede en el historial (y el
+  // catálogo reaparece con su filtro y su scroll). Si se abrió el link del
+  // producto directo, no hay historial dentro de la app: va al catálogo.
+  function goBack() {
+    if (location.key !== 'default') navigate(-1);
+    else navigate('/catalogo');
+  }
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,7 +53,7 @@ export default function ProductDetail() {
       <div className="detail-page">
         <Header />
         <div className="detail-screen">
-          <button type="button" className="detail-back" onClick={() => navigate(-1)}>
+          <button type="button" className="detail-back" onClick={goBack}>
             ← Volver
           </button>
           <p className="empty-state">Cargando producto...</p>
@@ -58,7 +67,7 @@ export default function ProductDetail() {
       <div className="detail-page">
         <Header />
         <div className="detail-screen">
-          <button type="button" className="detail-back" onClick={() => navigate(-1)}>
+          <button type="button" className="detail-back" onClick={goBack}>
             ← Volver
           </button>
           <p className="error">{error || 'Producto no encontrado.'}</p>
@@ -74,7 +83,7 @@ export default function ProductDetail() {
     <div className="detail-page">
       <Header />
       <div className="detail-screen">
-        <button type="button" className="detail-back" onClick={() => navigate(-1)}>
+        <button type="button" className="detail-back" onClick={goBack}>
           ← Volver
         </button>
 
