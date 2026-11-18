@@ -4,6 +4,12 @@ import { useEmployee } from '../context/EmployeeContext.jsx';
 import { api } from '../api/client.js';
 import coniferalLogo from '../assets/coniferal-tienda-logo.png';
 
+// Número al que se pide el código de acceso (WhatsApp, formato internacional sin "+").
+const ACCESS_REQUEST_PHONE = '5493515193175';
+const ACCESS_REQUEST_URL = `https://wa.me/${ACCESS_REQUEST_PHONE}?text=${encodeURIComponent(
+  'Hola, quiero solicitar un código de acceso a Pediwapp.'
+)}`;
+
 export default function Login() {
   const [legajo, setLegajo] = useState('');
   const [dni, setDni] = useState('');
@@ -78,6 +84,15 @@ export default function Login() {
         </form>
 
         {error && <p className="error">{error}</p>}
+
+        <div className="login-notice" role="note">
+          <p>
+            <strong>¿No tenés usuario y contraseña?</strong> Solicitá un código de acceso.
+          </p>
+          <a href={ACCESS_REQUEST_URL} target="_blank" rel="noopener noreferrer">
+            Solicitar código de acceso
+          </a>
+        </div>
       </div>
     </div>
   );
