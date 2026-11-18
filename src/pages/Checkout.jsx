@@ -99,7 +99,11 @@ export default function Checkout() {
                 −
               </button>
               <span>{item.qty}</span>
-              <button type="button" onClick={() => updateQty(item.productId, item.qty + 1)}>
+              <button
+                type="button"
+                onClick={() => updateQty(item.productId, item.qty + 1)}
+                disabled={Number.isFinite(item.stock) && item.qty >= item.stock}
+              >
                 +
               </button>
             </div>

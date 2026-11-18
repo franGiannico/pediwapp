@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
-import { formatMoney } from '../utils/format.js';
+import { formatMoney, stockInfo } from '../utils/format.js';
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const price = product.promotionalPrice || product.price;
+  const stock = stockInfo(product.stock);
 
   function goToDetail() {
     navigate(`/producto/${product.id}`);
@@ -22,6 +23,7 @@ export default function ProductCard({ product }) {
 
   function handleAdd(e) {
     e.stopPropagation();
+    if (stock.soldOut) return;
     addItem(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
@@ -46,12 +48,13 @@ export default function ProductCard({ product }) {
         <h3 onClick={goToDetail} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
           {product.name}
         </h3>
+        {stock.label ? <span className={`stock-tag ${stock.soldOut ? 'out' : 'low'}`}>{stock.label}</span> : null}
         <div className="product-price">
           {product.promotionalPrice ? <span className="price-old">${formatMoney(product.price)}</span> : null}
           <span className="price">${formatMoney(price)}</span>
         </div>
-        <button type="button" className={`add-btn ${added ? 'added' : ''}`} onClick={handleAdd}>
-          {added ? '✓ Agregado' : 'Agregar'}
+        <button type="button" className={`add-btn ${added ? 'added' : ''}`} onClick={handleAdd} disabled={stock.soldOut}>
+          {stock.soldOut ? 'Sin stock' : added ? '✓ Agregado' : 'Agregar'}
         </button>
       </div>
     </div>

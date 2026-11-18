@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { api } from '../api/client.js';
-import { formatMoney } from '../utils/format.js';
+import { formatMoney, stockInfo } from '../utils/format.js';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -41,7 +41,7 @@ export default function ProductDetail() {
   }, [id]);
 
   function handleAdd() {
-    if (!product) return;
+    if (!product || stockInfo(product.stock).soldOut) return;
     addItem(product, qty);
     setAdded(true);
     setQty(1);
@@ -77,6 +77,8 @@ export default function ProductDetail() {
   }
 
   const price = product.promotionalPrice || product.price;
+  const stock = stockInfo(product.stock);
+  const maxQty = Number.isFinite(product.stock) ? Math.max(1, product.stock) : Infinity;
   const images = product.images?.length ? product.images : [];
 
   return (
@@ -115,6 +117,7 @@ export default function ProductDetail() {
         <div className="detail-info">
           <h1>{product.name}</h1>
           {product.sku && <p className="detail-sku">SKU: {product.sku}</p>}
+          {stock.label ? <span className={`stock-tag ${stock.soldOut ? 'out' : 'low'}`}>{stock.label}</span> : null}
           <div className="product-price detail-price">
             {product.promotionalPrice ? <span className="price-old">${formatMoney(product.price)}</span> : null}
             <span className="price">${formatMoney(price)}</span>
@@ -131,12 +134,12 @@ export default function ProductDetail() {
               −
             </button>
             <span>{qty}</span>
-            <button type="button" onClick={() => setQty((q) => q + 1)} aria-label="Sumar cantidad">
+            <button type="button" onClick={() => setQty((q) => Math.min(maxQty, q + 1))} disabled={stock.soldOut || qty >= maxQty} aria-label="Sumar cantidad">
               +
             </button>
           </div>
-          <button type="button" className={`add-btn ${added ? 'added' : ''}`} onClick={handleAdd}>
-            {added ? '✓ Agregado al carrito' : 'Agregar'}
+          <button type="button" className={`add-btn ${added ? 'added' : ''}`} onClick={handleAdd} disabled={stock.soldOut}>
+            {stock.soldOut ? 'Sin stock' : added ? '✓ Agregado al carrito' : 'Agregar'}
           </button>
         </div>
       </div>

@@ -52,6 +52,15 @@ function Summary({ diff, applied }) {
         <li>
           <strong>{diff.unchanged}</strong> sin cambios
         </li>
+        <li>
+          {diff.hasStockColumn ? (
+            <>
+              <strong>{diff.stockRows}</strong> con stock en el Excel
+            </>
+          ) : (
+            'Sin columna “Stock”: se usa el de Tiendanube'
+          )}
+        </li>
         <li className={diff.removed ? 'warn' : ''}>
           <strong>{diff.removed}</strong> se quitan de la lista (no están en este Excel)
         </li>
@@ -237,7 +246,7 @@ export default function Prices({ onExpired }) {
         <h2>Actualizar precios desde un Excel</h2>
         <p className="muted small">
           El Excel tiene que tener las columnas <strong>SKU</strong> y <strong>Precio</strong> (se usa esa, no “Precio Meli”). Se compara con la lista actual y
-          podés revisar los cambios antes de confirmar. Las demás columnas (costos, stock, etc.) no se guardan.
+          podés revisar los cambios antes de confirmar. Si además tiene una columna <strong>Stock</strong>, la app la usa para mostrar “Quedan X” / “Sin stock” (si un SKU no trae stock, se usa el de Tiendanube). Las demás columnas (costos, etc.) no se guardan.
         </p>
         <input ref={inputRef} type="file" accept=".xlsx" onChange={handleFile} disabled={busy} />
 

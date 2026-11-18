@@ -21,12 +21,19 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
+  // stock: número, o null/undefined si no hay control de stock.
+  const maxFor = (stock) => (Number.isFinite(stock) ? Math.max(0, stock) : Infinity);
+
   function addItem(product, qty = 1) {
+    const max = maxFor(product.stock);
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === product.id);
       if (existing) {
-        return prev.map((i) => (i.productId === product.id ? { ...i, qty: i.qty + qty } : i));
+        return prev.map((i) =>
+          i.productId === product.id ? { ...i, stock: product.stock ?? null, qty: Math.min(i.qty + qty, max) } : i
+        );
       }
+      if (max <= 0) return prev;
       return [
         ...prev,
         {
@@ -35,7 +42,8 @@ export function CartProvider({ children }) {
           sku: product.sku,
           price: product.promotionalPrice || product.price,
           imageUrl: (product.images && product.images[0]) || '',
-          qty,
+          stock: product.stock ?? null,
+          qty: Math.min(qty, max),
         },
       ];
     });
@@ -46,7 +54,9 @@ export function CartProvider({ children }) {
       removeItem(productId);
       return;
     }
-    setItems((prev) => prev.map((i) => (i.productId === productId ? { ...i, qty } : i)));
+    setItems((prev) =>
+      prev.map((i) => (i.productId === productId ? { ...i, qty: Math.min(qty, maxFor(i.stock)) || i.qty } : i))
+    );
   }
 
   function removeItem(productId) {
